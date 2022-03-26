@@ -1,4 +1,4 @@
-box: python
+box: ubuntu
 build:
   steps:
     - script:
