@@ -1,4 +1,4 @@
-from ubuntu
+from base
 
 maintainer Micha Hernandez van Leuffen
 
