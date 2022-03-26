@@ -1,18 +1,27 @@
-box: ubuntu
-build:
-  steps:
-    - script:
-        name: docker version
-        code: |
-          # Simply print docker version
-          sudo docker version
-    - script:
-        name: docker build
-        code: |
-          # Build the actual container with the Dockerfile (included in the repo)
-          sudo docker build -t mies/rethinkdb .
-    - script:
-        name: list images
-        code: |
-          # List docker images, it should list the rethinkdb image
-          sudo docker images
+name: rethinkdb
+version: 0.5.0
+inherits: wercker/ubuntu12.04-webessentials@1.0.4
+type: service
+platform: ubuntu@12.04
+description: wercker box for rethinkdb an open source distributed database
+keywords:
+  - rethinkdb
+  - opensource
+  - nosql
+  - database
+  - json
+packages:
+  - rethinkdb@2.0.1
+script: |
+  source /etc/lsb-release && echo "deb http://download.rethinkdb.com/apt $DISTRIB_CODENAME main" | sudo tee /etc/apt/sources.list.d/rethinkdb.list
+  wget -O- http://download.rethinkdb.com/apt/pubkey.gpg | sudo apt-key add -
+  sudo apt-get update -y
+  sudo apt-get install rethinkdb -y
+  sudo mkdir -p /etc/rethinkdb/instances.d
+  sudo -- sh -c "echo 'bind=all' > /etc/rethinkdb/instances.d/default.conf"
+env:
+  WERCKER_RETHINKDB_PORT: 28015
+  WERCKER_RETHINKDB_HOST: $$HOST$$
+  WERCKER_RETHINKDB_URL: $$HOST$$:28015
+  WERCKER_RETHINKDB_VERSION: "2.0.1"
+  RETHINKDB_URL: $$HOST$$:28015
